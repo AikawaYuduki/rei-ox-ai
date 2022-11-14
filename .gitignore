@@ -1,0 +1,5 @@
+/target
+/.vscode
+/venv
+/py/logs
+/py/__pycache__
