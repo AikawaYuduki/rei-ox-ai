@@ -27,10 +27,11 @@ class DeepQNetworkAgent(FNAgent):
         model = K.Sequential()
         model.add(
             K.layers.Dense(
-                64, kernel_initializer=normal, activation="relu", input_shape=(9,)
+                81, kernel_initializer=normal, activation="relu", input_shape=(9,)
             )
         )
-        model.add(K.layers.Dense(128, kernel_initializer=normal, activation="relu"))
+        model.add(K.layers.Dense(243, kernel_initializer=normal, activation="relu"))
+        model.add(K.layers.Dense(81, kernel_initializer=normal, activation="relu"))
         model.add(K.layers.Dense(len(self.actions), kernel_initializer=normal))
         self.model = model
         self._teacher_model = K.models.clone_model(self.model)
@@ -247,7 +248,7 @@ class DeepQNetworkTrainer(Trainer):
                 elif done and info.endswith("Win"):
                     rival_s = self.experiences[1 - turn][-1].s
                     rival_a = self.experiences[1 - turn][-1].a
-                    rival_r = self.experiences[1 - turn][-1].r * -1
+                    rival_r = reward * -1
                     rival_n_s = self.experiences[1 - turn][-1].n_s
                     rival_d = self.experiences[1 - turn][-1].d
                     rival_e = Experience(rival_s, rival_a, rival_r, rival_n_s, rival_d)
@@ -342,7 +343,7 @@ def main(play):
         agent = agent_class.load(obs, path)
         agent.play(obs, render=True)
     else:
-        trainer.train(obs, episode_count=400)
+        trainer.train(obs, episode_count=200000)
 
     trainer.logger.plot("reward", trainer.reward_log[0])
 
